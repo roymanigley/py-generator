@@ -1,0 +1,40 @@
+<div class="row container center">
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="col s12">
+        <div class="row">
+            <div class="input-field col s12">
+                <i class="material-icons prefix">account_circle</i>
+
+                <input
+                    formControlName="login"
+                    [required]="true"
+                    id="icon_login"
+                    type="text"
+                    class="validate">
+                <label for="icon_login">Login</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col s12">
+                <i class="material-icons prefix">key</i>
+                <input
+                    formControlName="password"
+                    [required]="true"
+                    id="icon_password"
+                    type="password"
+                    class="validate">
+                <label for="icon_password">Password</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col s12">
+                <button
+                    type="submit"
+                    [disabled]="loginForm.invalid"
+                    class="waves-effect waves-light btn">
+                    <i class="material-icons left">login</i>
+                    Login
+                </button>
+            </div>
+        </div>
+    </form>
+</div>

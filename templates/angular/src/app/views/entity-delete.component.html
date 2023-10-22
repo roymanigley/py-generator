@@ -1,0 +1,19 @@
+{% for model in domain_models %}# py-conf-meta-inf: {"file_name": "{{helpers.to_kebab_case(model.name)}}/{{helpers.to_kebab_case(model.name)}}-delete/{{helpers.to_kebab_case(model.name)}}-delete.component.html"}
+<div class="container">
+    <div class="row center">
+        <h1>{{ model.name }} Delete</h1>
+    </div>
+    <div class="card">
+        <div class="card-content">
+            <span class="card-title">Id: {{ '{{ selected.id }}' }}</span>
+            <pre>
+{{ '{{ selected | json }}' }}
+            </pre>
+        </div>
+        <div class="card-action center">
+            <button style="margin-right: 3em;" (click)="back()" class="waves-effect waves-light btn-floating"><i class="material-icons left grey">arrow_back</i>back</button>
+            <button (click)="delete()" class="waves-effect waves-light btn-floating"><i class="material-icons left red">delete</i>delete</button>
+        </div>
+    </div>
+</div>
+{% endfor %}

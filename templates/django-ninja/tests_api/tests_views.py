@@ -14,6 +14,9 @@ UPDATED_DESIGNATION = 'HR'
 
 {% for model in domain_models %}
 class {{ model.name }}RestTest(TestCase):
+
+    base_path = '/api/{{helpers.to_kebab_case(model.name) | lower }}'
+
     def setUp(self):
         _, basic_auth_header = create_active_user()
         self.client = Client(HTTP_AUTHORIZATION=basic_auth_header)
@@ -22,7 +25,7 @@ class {{ model.name }}RestTest(TestCase):
         # GIVEN
         record = self.create_persisted()
         # WHEN
-        response = self.client.get('/api/{{ model.name | lower }}')
+        response = self.client.get(self.base_path)
         # THEN
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()[0]['id'], record.id)
@@ -32,7 +35,7 @@ class {{ model.name }}RestTest(TestCase):
 
     def test_get_all_should_return_empty_list(self):
         # WHEN
-        response = self.client.get('/api/{{ model.name | lower }}')
+        response = self.client.get(self.base_path)
         # THEN
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), [])
@@ -41,7 +44,7 @@ class {{ model.name }}RestTest(TestCase):
         # GIVEN
         record = self.create_persisted()
         # WHEN
-        response = self.client.get(f'/api/{{ model.name | lower }}/{record.id}')
+        response = self.client.get(self.base_path + f'/{record.id}')
         # THEN
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()['id'], record.id)
@@ -53,7 +56,7 @@ class {{ model.name }}RestTest(TestCase):
         # GIVEN
         id = 999
         # WHEN
-        response = self.client.get(f'/api/{{ model.name | lower }}/{id}')
+        response = self.client.get(self.base_path + f'/{id}')
         # THEN
         self.assertEqual(response.status_code, 404)
 
@@ -61,7 +64,7 @@ class {{ model.name }}RestTest(TestCase):
         # GIVEN
         payload = self.create()
         # WHEN
-        response = self.client.post('/api/{{ model.name | lower }}', payload, content_type='application/json')
+        response = self.client.post(self.base_path, payload, content_type='application/json')
         # THEN
         self.assertEqual(response.status_code, 201)
         id = response.json().get("id")
@@ -79,7 +82,7 @@ class {{ model.name }}RestTest(TestCase):
         {% endif %}{% endfor %}{% for relation in model.relations %}{% if relation.required %}payload["{{relation.name}}_id"] = None
         {% endif %}{% endfor %}
         # WHEN
-        response = self.client.post('/api/{{ model.name | lower }}', payload, content_type='application/json')
+        response = self.client.post(self.base_path, payload, content_type='application/json')
         # THEN
         self.assertEqual(response.status_code, 422)
 
@@ -88,7 +91,7 @@ class {{ model.name }}RestTest(TestCase):
         id = self.create_persisted().id
         payload = self.create_updated()
         # WHEN
-        response = self.client.put(f'/api/{{ model.name | lower }}/{id}', payload, content_type='application/json')
+        response = self.client.put(self.base_path + f'/{id}', payload, content_type='application/json')
         # THEN
         self.assertEqual(response.status_code, 200)
         record = {{ model.name }}.objects.filter(id=id).first()
@@ -105,7 +108,7 @@ class {{ model.name }}RestTest(TestCase):
         {% endif %}{% endfor %}{% for relation in model.relations %}{% if relation.required %}payload["{{relation.name}}_id"] = None
         {% endif %}{% endfor %}
         # WHEN
-        response = self.client.put(f'/api/{{ model.name | lower }}/{record.id}', payload, content_type='application/json')
+        response = self.client.put(self.base_path + f'/{record.id}', payload, content_type='application/json')
         # THEN
         self.assertEqual(response.status_code, 422)
 
@@ -114,7 +117,7 @@ class {{ model.name }}RestTest(TestCase):
         id = 999
         payload = self.create()
         # WHEN
-        response = self.client.put(f'/api/{{ model.name | lower }}/{id}', payload, content_type='application/json')
+        response = self.client.put(self.base_path + f'/{id}', payload, content_type='application/json')
         # THEN
         self.assertEqual(response.status_code, 404)
 
@@ -122,7 +125,7 @@ class {{ model.name }}RestTest(TestCase):
         # GIVEN
         id = self.create_persisted().id
         # WHEN
-        response = self.client.delete(f'/api/{{ model.name | lower }}/{id}')
+        response = self.client.delete(self.base_path + f'/{id}')
         # THEN
         self.assertEqual(response.status_code, 204)
         record = {{ model.name }}.objects.filter(id=id).first()
@@ -132,7 +135,7 @@ class {{ model.name }}RestTest(TestCase):
         # GIVEN
         id = 999
         # WHEN
-        response = self.client.delete(f'/api/{{ model.name | lower }}/{id}')
+        response = self.client.delete(self.base_path + f'/{id}')
         # THEN
         self.assertEqual(response.status_code, 404)
 

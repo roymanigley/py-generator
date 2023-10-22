@@ -1,0 +1,35 @@
+{% for model in domain_models %}# py-conf-meta-inf: {"file_name": "{{helpers.to_kebab_case(model.name)}}/{{helpers.to_kebab_case(model.name)}}-update/{{helpers.to_kebab_case(model.name)}}-update.component.html"}
+ <div class="row">
+        <h1 *ngIf="selected?.id">{{ model.name }} Update</h1>
+        <h1 *ngIf="!selected?.id">{{ model.name }} Create</h1>
+</div>
+<div class="card" *ngIf="formGroup">
+    <div class="card-content">
+        <span *ngIf="selected?.id" class="card-title">Id: {{ '{{ selected?.id }}' }}</span>
+        <span *ngIf="!selected?.id" class="card-title">New</span>
+
+
+        <div class="row">
+            <form [formGroup]="formGroup" class="col s12">
+            <!-- {input_fields} -->
+            </form>
+        </div>
+
+
+    </div>
+    <div class="card-action center">
+        <button
+            style="margin-right: 3em;"
+            (click)="back()"
+            class="waves-effect waves-light btn-floating">
+            <i class="material-icons left grey">arrow_back</i>back
+        </button>
+        <button
+            (click)="save()"
+            [disabled]="formGroup.invalid"
+            class="waves-effect waves-light btn-floating">
+            <i class="material-icons left">save</i>delete
+        </button>
+    </div>
+</div>
+{% endfor %}

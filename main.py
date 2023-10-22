@@ -14,5 +14,9 @@ person = Entity('ParentEntity', fields=[
 ])
 application = ApplicationModel(app_name='Dummy', entities=[gender, person])
 
-base_dir = '/tmp/experiment/experiment_app'
-Generator().generate(base_dir, application)
+base_dir = '/home/royman/repo/local/aaaa-angular/py-generator'
+base_dir = '/tmp/aaa/Dummy'
+Generator('angular').generate(base_dir, application)
+
+# base_dir = '/tmp/experiment/experiment_app'
+# Generator().generate(base_dir, application)

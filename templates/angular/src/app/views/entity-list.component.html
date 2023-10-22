@@ -1,0 +1,35 @@
+{% for model in domain_models %}# py-conf-meta-inf: {"file_name": "{{helpers.to_kebab_case(model.name)}}/{{helpers.to_kebab_case(model.name)}}-list/{{helpers.to_kebab_case(model.name)}}-list.component.html"}
+<div class="container">
+    <div class="row center">
+        <h1>{{ model.name }} List</h1>
+    </div>
+    <div class="row">
+        <table class="highlight striped">
+            <thead>
+                <th>Id</th>
+                <th>content</th>
+                <th style="width: 10em;"><a [routerLink]="['new']" class="btn-floating right"><i class="material-icons waves-light">add</i></a></th>
+            </thead>
+            <tbody>
+                <tr *ngFor="let record of records">
+                    <td>{{ '{{ record.id }}' }}</td>
+                    <td>{{ '{{ record | json }}' }}</td>
+                    <td>
+                        <div class="row">
+                            <div class="col s4">
+                                <a [routerLink]="['detail', record.id]" class="btn-floating waves-light"><i class="material-icons grey">visibility</i></a>
+                            </div>
+                            <div class="col s4">
+                                <a [routerLink]="['update', record.id]" class="btn-floating waves-light"><i class="material-icons">edit</i></a>
+                            </div>
+                            <div class="col s4">
+                                <a [routerLink]="['delete', record.id]" class="btn-floating waves-light"><i class="material-icons red">delete</i></a>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endfor %}

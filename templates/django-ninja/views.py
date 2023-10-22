@@ -1,23 +1,28 @@
+from ninja import NinjaAPI
+from ninja.security import django_auth
+from .auth import ApiBasicAuth
+from .errors import register as register_errors
+{%for model in domain_models %}from .rest.{{ helpers.to_snake_case(model.name)}} import {{ model.name }}Resource
+{% endfor %}
+
+api = NinjaAPI(csrf=True, auth=[django_auth, ApiBasicAuth()], urls_namespace='api')
+
+register_errors(api)
+{% for model in domain_models %}{{ model.name }}Resource.register(api)
+{% endfor %}
+{% for model in domain_models %}# py-conf-meta-inf: {"file_name": "rest/{{helpers.to_snake_case(model.name)}}.py"}
 from typing import List
 
 from django.http import HttpRequest
 from django.shortcuts import get_object_or_404
 from ninja import NinjaAPI
-from ninja.security import django_auth
-from .auth import ApiBasicAuth
-from .errors import default_errors, register as register_errors
-from .models import {{ domain_models | map(attribute='name') | join(', ') }}
-from .schemas import {% for model in domain_models %}{{ model.name }}SchemaOut, {{ model.name }}SchemaIn{{ ', ' if not loop.last else '' }}{% endfor %}
+from ..errors import default_errors
+from ..models import {{ model.name }}
+from ..schemas import {{ model.name }}SchemaIn, {{ model.name }}SchemaOut
 
-
-api = NinjaAPI(csrf=True, auth=[django_auth, ApiBasicAuth()], urls_namespace='api')
-
-register_errors(api)
-
-{% for model in domain_models %}
 class {{ model.name }}Resource:
 
-    base_path = '{{ model.name | lower }}'
+    base_path = '{{helpers.to_kebab_case(model.name) | lower }}'
     tag = '{{ model.name }}'
 
     @staticmethod
@@ -48,6 +53,4 @@ class {{ model.name }}Resource:
             get_object_or_404({{model.name}}, id=id).delete()
             return 204, None
 
-{% endfor %}
-{% for model in domain_models %}{{ model.name }}Resource.register(api)
 {% endfor %}

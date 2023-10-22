@@ -1,6 +1,8 @@
+import json
 import os
 import re
 from os import path
+from subprocess import call
 from typing import List
 
 from jinja2 import Environment, FileSystemLoader, Template
@@ -13,8 +15,8 @@ TEMPLATES_BASE_PATH = path.realpath(path.join(__file__, '../templates'))
 class Generator(object):
     templates = []
 
-    def __init__(self):
-        self.templates = self._init_templates()
+    def __init__(self, template_type: str):
+        self.templates = self._init_templates(template_type)
 
     @staticmethod
     def _init_templates(template_type='django-ninja') -> List[Template]:
@@ -28,17 +30,71 @@ class Generator(object):
                 templates.append(env.get_template(template_path))
         return templates
 
+    @staticmethod
+    def _create_parent_dir_if_not_exsists(file: str):
+        parent_dir = path.realpath(path.join(file, '..'))
+        if not path.exists(parent_dir):
+            os.makedirs(parent_dir)
+
     def generate(self, target_dir: str, application: ApplicationModel or dict):
         if isinstance(application, ApplicationModel):
             application = application.__dict__
 
         for template in self.templates:
-            target_file = path.join(target_dir, template.name[1:])
-            target_directory = path.realpath(path.join(target_file, '..'))
-            if not path.exists(target_directory):
-                os.makedirs(target_directory)
-            print('[+] generating: ', target_file)
-            generated_content = template.render(domain_models=application['entities'])
-            with open(target_file, 'w') as f:
-                f.write(generated_content)
-            print('[+] generated:  ', target_file)
+            initial_target_file = path.join(target_dir, template.name[1:])
+            self._create_parent_dir_if_not_exsists(initial_target_file)
+            print('[+] processing: ', initial_target_file)
+            generated_content = template.render(domain_models=application['entities'], app=application, helpers=Helpers)
+            f = open(initial_target_file, 'w')
+            files_to_execute = []
+            target_file = initial_target_file
+            for line in generated_content.splitlines():
+                if line.find('py-conf-meta-inf: {') > -1:
+                    meta_data = json.loads(re.sub('^.*py-conf-meta-inf: ', '', line))
+                    if 'file_name' in meta_data:
+                        f.close()
+                        file_name = meta_data['file_name']
+                        target_file = path.realpath(path.join(initial_target_file, '..', file_name))
+                        self._create_parent_dir_if_not_exsists(target_file)
+                        f = open(target_file, 'w')
+                    if 'execute' in meta_data and meta_data['execute']:
+                        files_to_execute.append(target_file)
+                else:
+                    f.write(line + '\n')
+            f.close()
+            for file_to_execute in files_to_execute:
+                print('[+] executing:  ', file_to_execute)
+                # TODO: WINDOWS COMPATIBLE
+                call(['chmod', '+x', file_to_execute])
+                # TODO: WINDOWS COMPATIBLE
+                call(['bash', file_to_execute], cwd=path.realpath(path.join(file_to_execute, '..')))
+            if os.stat(initial_target_file).st_size == 0:
+                os.remove(initial_target_file)
+            print('[+] processed:  ', initial_target_file)
+
+
+class Helpers(object):
+
+    @staticmethod
+    def to_camel_case(s: str) -> str:
+        s = re.sub(r"(_|-)+|([A-Z]+)", " \\2", s).title().replace(" ", "")
+        return ''.join([s[0].lower(), s[1:]])
+
+    @staticmethod
+    def to_pascal_case(s: str) -> str:
+        s = re.sub(r"(_|-)+|([A-Z]+)", " \\2", s).title().replace(" ", "")
+        return ''.join([s[0].upper(), s[1:]])
+
+    @staticmethod
+    def to_snake_case(s: str) -> str:
+        s = re.sub(r"(_|-)+|([A-Z]+)", " \\2", s).title().replace(" ", "_")
+        return re.sub('^_', '', s.lower())
+
+    @staticmethod
+    def to_snake_case_upper(s: str) -> str:
+        return Helpers.to_snake_case(s).upper()
+
+    @staticmethod
+    def to_kebab_case(s: str) -> str:
+        s = re.sub(r"(_|-)+|([A-Z]+)", " \\2", s).title().replace(" ", "-")
+        return re.sub('^-', '', s.lower())

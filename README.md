@@ -1,7 +1,18 @@
 # PyGenerator
 > code generator for django projects
 
+## Usage
+
+### Pre requirements
+
+- angular cli
+- python
+- django
+
 ## Features
+
+### Backend (Django)
+
 - CRUD endpoints
 - Swagger UI (`/api/docs`)
 - Schemas
@@ -22,6 +33,8 @@
       │   └── tests_views.py
       ├── urls.py
       └── views.py
+
+### Frontend (Angular)
 
 ## Initialisation
 
@@ -50,5 +63,12 @@
 ### Extras
 > If you want you chan check the test coverage using `coverage.py`
 1. install `coverage` run `pip install coverage`
-2. run the tests `coverage run --source='.' manage.py test`
+2. run the `coverage run --source='.' manage.py test`
 3. generate the report `coverage report -m`
+
+## TODO:
+- [ ] windows compatible
+- [ ] generate django Project an App similar to angular
+- [ ] django ninja pagination and filtering
+- [ ] frontend testing
+- [ ] frontend autocomplete for relations
