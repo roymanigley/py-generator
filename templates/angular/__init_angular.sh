@@ -1,7 +1,9 @@
 # py-conf-meta-inf: {"execute": true}
-cd ../
-ng new {{ app.app_name }}_frontend --routing --style scss --skip-git
-cd {{ app.app_name }}_frontend
+mkdir -p {{ helpers.to_snake_case(app.app_name) }}
+cd {{ helpers.to_snake_case(app.app_name) }}
+rm -rf {{ helpers.to_snake_case(app.app_name) }}_frontend
+ng new {{ helpers.to_snake_case(app.app_name) }}_frontend --routing --style scss --skip-git
+cd {{ helpers.to_snake_case(app.app_name) }}_frontend
 ng g module shared
 ng g module views/Login
 ng g component views/Login
@@ -33,4 +35,4 @@ ng g resolver views/{{ helpers.to_kebab_case(model.name) }}/{{model.name}}
 {% endfor %}
 
 # TODO: windows compatible
-cat angular.json | sed 's/\(build:development"\)/\1, "proxyConfig": "src\/proxy.conf.json"/g' > test.angular.json
+sed 's/\(build:development"\)/\1, "proxyConfig": "src\/proxy.conf.json"/g' -i angular.json

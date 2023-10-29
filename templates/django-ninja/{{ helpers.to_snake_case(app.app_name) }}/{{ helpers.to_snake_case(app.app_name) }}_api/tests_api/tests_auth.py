@@ -5,7 +5,7 @@ from django.http import HttpRequest
 from django.test import Client
 from django.test import TestCase
 
-from ..views import api
+from {{ helpers.to_snake_case(app.app_name) }}_api.views import api
 
 
 @api.get('/login-check')

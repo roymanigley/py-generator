@@ -1,36 +1,26 @@
-from ninja import NinjaAPI
-from ninja.security import django_auth
-from .auth import ApiBasicAuth
-from .errors import register as register_errors
-{%for model in domain_models %}from .rest.{{ helpers.to_snake_case(model.name)}} import {{ model.name }}Resource
-{% endfor %}
-
-api = NinjaAPI(csrf=True, auth=[django_auth, ApiBasicAuth()], urls_namespace='api')
-
-register_errors(api)
-{% for model in domain_models %}{{ model.name }}Resource.register(api)
-{% endfor %}
-{% for model in domain_models %}# py-conf-meta-inf: {"file_name": "rest/{{helpers.to_snake_case(model.name)}}.py"}
+# py-conf-meta-inf: {"file_name": "{{helpers.to_snake_case(model.name)}}.py"}
 from typing import List
 
 from django.http import HttpRequest
 from django.shortcuts import get_object_or_404
-from ninja import NinjaAPI
+from ninja import NinjaAPI, Query
+from ninja.pagination import paginate
 from ..errors import default_errors
 from ..models import {{ model.name }}
-from ..schemas import {{ model.name }}SchemaIn, {{ model.name }}SchemaOut
+from ..schemas import {{ model.name }}SchemaIn, {{ model.name }}SchemaOut, {{ model.name }}Filter
 
 class {{ model.name }}Resource:
 
-    base_path = '{{helpers.to_kebab_case(model.name) | lower }}'
+    base_path = '{{ helpers.to_kebab_case(model.name) }}'
     tag = '{{ model.name }}'
 
     @staticmethod
     def register(api: NinjaAPI):
 
         @api.get({{ model.name }}Resource.base_path, tags=[{{ model.name }}Resource.tag], summary='returns all records',  response={200: List[{{ model.name }}SchemaOut], **default_errors})
-        def find_all(request: HttpRequest):
-            return 200, {{ model.name }}.objects.all()
+        @paginate(page_size=20)
+        def find_all(request: HttpRequest, filters : {{ model.name }}Filter = Query(...)):
+            return filters.filter({{ model.name }}.objects.all())
 
         @api.get({{ model.name }}Resource.base_path + '/{id}', tags=[{{ model.name }}Resource.tag], summary='retrieves a single record by id', response={200: {{ model.name }}SchemaOut, **default_errors})
         def find_by_id(request: HttpRequest, id: int):

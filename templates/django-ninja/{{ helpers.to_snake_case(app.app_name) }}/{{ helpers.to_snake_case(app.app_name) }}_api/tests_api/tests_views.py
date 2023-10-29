@@ -6,8 +6,8 @@ from django.test import TestCase
 from pydantic.datetime_parse import timezone
 from django.contrib.auth.models import User
 
-from .tests_auth import create_active_user
-from ..models import {{ domain_models | map(attribute='name') | join(', ') }}
+from {{ helpers.to_snake_case(app.app_name) }}_api.tests_api.tests_auth import create_active_user
+from {{ helpers.to_snake_case(app.app_name) }}_api.models import {{ domain_models | map(attribute='name') | join(', ') }}
 
 UPDATED_DESIGNATION = 'HR'
 {% set translation_string = 'aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ' %}
@@ -15,7 +15,7 @@ UPDATED_DESIGNATION = 'HR'
 {% for model in domain_models %}
 class {{ model.name }}RestTest(TestCase):
 
-    base_path = '/api/{{helpers.to_kebab_case(model.name) | lower }}'
+    base_path = '/api/{{helpers.to_kebab_case(model.name) }}'
 
     def setUp(self):
         _, basic_auth_header = create_active_user()
@@ -28,9 +28,10 @@ class {{ model.name }}RestTest(TestCase):
         response = self.client.get(self.base_path)
         # THEN
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json()[0]['id'], record.id)
-        {% for field in model.fields %}self.assertEqual(response.json()[0]['{{ field.name }}'], record.{{ field.name }})
-        {% endfor %}{% for relation in model.relations %}self.assertEqual(response.json()[0]['{{ relation.name }}']['id'], record.{{ relation.name }}.id)
+        items = response.json()['items']
+        self.assertEqual(items[0]['id'], record.id)
+        {% for field in model.fields %}self.assertEqual(items[0]['{{ field.name }}'], record.{{ field.name }})
+        {% endfor %}{% for relation in model.relations %}self.assertEqual(items[0]['{{ relation.name }}']['id'], record.{{ relation.name }}.id)
         {% endfor %}
 
     def test_get_all_should_return_empty_list(self):
@@ -38,7 +39,7 @@ class {{ model.name }}RestTest(TestCase):
         response = self.client.get(self.base_path)
         # THEN
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json(), [])
+        self.assertEqual(response.json()['items'], [])
 
     def test_get_by_id_existing(self):
         # GIVEN

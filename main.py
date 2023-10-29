@@ -15,7 +15,8 @@ person = Entity('ParentEntity', fields=[
 application = ApplicationModel(app_name='Dummy', entities=[gender, person])
 
 base_dir = '/home/royman/repo/local/aaaa-angular/py-generator'
-base_dir = '/tmp/aaa/Dummy'
+base_dir = '/tmp/aaa/'
+Generator('django-ninja').generate(base_dir, application)
 Generator('angular').generate(base_dir, application)
 
 # base_dir = '/tmp/experiment/experiment_app'

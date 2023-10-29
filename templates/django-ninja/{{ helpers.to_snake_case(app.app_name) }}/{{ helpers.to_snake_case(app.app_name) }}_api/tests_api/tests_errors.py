@@ -3,8 +3,8 @@ from django.test import Client
 from django.test import TestCase
 from ninja.errors import ValidationError
 
-from ..errors import default_errors, CustomAPIException
-from ..views import api
+from {{ helpers.to_snake_case(app.app_name) }}_api.errors import default_errors, CustomAPIException
+from {{ helpers.to_snake_case(app.app_name) }}_api.views import api
 
 ERROR_MESSAGE_400 = 'bad request error'
 ERROR_MESSAGE_404 = 'could not be found'

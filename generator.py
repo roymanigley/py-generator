@@ -5,7 +5,7 @@ from os import path
 from subprocess import call
 from typing import List
 
-from jinja2 import Environment, FileSystemLoader, Template
+from jinja2 import Environment, FileSystemLoader, Template, BaseLoader
 
 from model import ApplicationModel
 
@@ -18,8 +18,7 @@ class Generator(object):
     def __init__(self, template_type: str):
         self.templates = self._init_templates(template_type)
 
-    @staticmethod
-    def _init_templates(template_type='django-ninja') -> List[Template]:
+    def _init_templates(self, template_type='django-ninja') -> List[Template]:
         templates = []
         templates_base_path = os.path.join(TEMPLATES_BASE_PATH, template_type)
         env = Environment(loader=FileSystemLoader(templates_base_path))
@@ -40,8 +39,10 @@ class Generator(object):
         if isinstance(application, ApplicationModel):
             application = application.__dict__
 
+        path_parser = Environment(loader=BaseLoader)
+
         for template in self.templates:
-            initial_target_file = path.join(target_dir, template.name[1:])
+            initial_target_file = path_parser.from_string(path.join(target_dir, template.name[1:])).render(app=application, helpers=Helpers)
             self._create_parent_dir_if_not_exsists(initial_target_file)
             print('[+] processing: ', initial_target_file)
             generated_content = template.render(domain_models=application['entities'], app=application, helpers=Helpers)
@@ -68,8 +69,12 @@ class Generator(object):
                 call(['chmod', '+x', file_to_execute])
                 # TODO: WINDOWS COMPATIBLE
                 call(['bash', file_to_execute], cwd=path.realpath(path.join(file_to_execute, '..')))
-            if os.stat(initial_target_file).st_size == 0:
+                os.remove(file_to_execute)
+            if os.path.exists(initial_target_file) and os.stat(initial_target_file).st_size == 0:
                 os.remove(initial_target_file)
+            parent_dir = os.path.realpath(path.join(initial_target_file, '..'))
+            if os.path.exists(parent_dir) and len(os.listdir(parent_dir)) == 0:
+                os.removedirs(parent_dir)
             print('[+] processed:  ', initial_target_file)
 
 
