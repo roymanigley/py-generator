@@ -1,0 +1,11 @@
+<div class="input-field">
+    <label for="input_{{ '{{ label }}' }}">{{ '{{ label }}' }}</label>
+    <input
+        *ngIf="_control"
+        class="validate"
+        name="input_{{ label }}"
+        type="number"
+        [step]="step"
+        [formControl]="_control"
+        [required]="required">
+</div>

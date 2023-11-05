@@ -11,7 +11,29 @@
 
         <div class="row">
             <form [formGroup]="formGroup" class="col s12">
-            <!-- {input_fields} -->
+                {% for field in model.fields %}
+                {% if field.data_type.value == 'str' %}
+                <app-form-input-text
+                    label="{{ field.name }}"
+                    [control]="formGroup.get('{{ field.name }}')"></app-form-input-text>
+                {% elif field.data_type.value == 'int' %}
+                <app-form-input-number
+                        label="{{ field.name }}"
+                        [control]="formGroup.get('{{ field.name }}')"></app-form-input-number>
+                {% elif field.data_type.value == 'float' %}
+                <app-form-input-number
+                        label="{{ field.name }}"
+                        type="float"
+                        [control]="formGroup.get('{{ field.name }}')"></app-form-input-number>
+                {% elif field.data_type.value == 'date' %}
+                <app-form-input-date></app-form-input-date>
+                {% elif field.data_type.value == 'datetime' %}
+                <app-form-input-date></app-form-input-date>
+                {% endif %}
+                {% endfor %}
+                {% for relation in model.relations %}
+                <app-form-input-autocomplete></app-form-input-autocomplete>
+                {% endfor %}
             </form>
         </div>
 

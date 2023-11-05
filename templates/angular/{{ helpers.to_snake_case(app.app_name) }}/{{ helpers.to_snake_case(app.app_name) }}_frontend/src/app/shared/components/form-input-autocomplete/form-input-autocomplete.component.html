@@ -1,0 +1,15 @@
+<div class="input-field">
+    <label for="input_{{ '{{ label }}' }}">{{ '{{ label }}' }}</label>
+    <input
+        list="entries"
+        #autocomplete
+        [formControl]="autocomplete_control"
+        (change)="search('a');select($event)"
+        [required]="required">
+    <datalist id="entries">
+        <option
+            *ngFor="let item of results">
+            {{ displayFn(item) }}
+        </option>
+    </datalist>
+</div>

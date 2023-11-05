@@ -4,6 +4,9 @@
         <ul class="right hide-on-med-and-down">
             <ng-container *ngIf="isLoggedIn()">
  <!-- TODO: {entity_links}-->
+                {% for model in domain_models %}
+                <li routerLinkActive="active"><a [routerLink]="['/{{ helpers.to_kebab_case(model.name) }}']">{{ model.name }}</a></li>
+                {% endfor %}
                 <li routerLinkActive="active"><a [routerLink]="['/logout']"><i class="material-icons left">logout</i>Logout</a></li>
             </ng-container>
             <li *ngIf="!isLoggedIn()" routerLinkActive="active"><a [routerLink]="['/login']"><i class="material-icons left">login</i>Login</a></li>

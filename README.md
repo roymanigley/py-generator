@@ -1,6 +1,13 @@
 # PyGenerator
 > code generator for django projects
 
+## TODO:
+
+- [ ] Login (Frontend)
+- [ ] Input Fields (Frontend)
+- [ ] ENUMs (Frontend / Backend)
+- [ ] Guards when leaving without saving (Frontend)
+
 ## Usage
 
 ### Pre requirements

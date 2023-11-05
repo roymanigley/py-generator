@@ -1,4 +1,4 @@
-{% for model in domain_models %}# py-conf-meta-inf: {"file_name": "{{ helpers.to_kebab_case(model.name) }}/{{ helpers.to_kebab_case(model.name) }}-detail.component.ts"}
+{% for model in domain_models %}# py-conf-meta-inf: {"file_name": "{{ helpers.to_kebab_case(model.name) }}/{{helpers.to_kebab_case(model.name)}}-detail/{{ helpers.to_kebab_case(model.name) }}-detail.component.ts"}
 import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';

@@ -1,4 +1,4 @@
-# py-conf-meta-inf: {"file_name": "{{helpers.to_snake_case(model.name)}}.py"}
+{% for model in domain_models %}# py-conf-meta-inf: {"file_name": "{{helpers.to_snake_case(model.name)}}.py"}
 from typing import List
 
 from django.http import HttpRequest

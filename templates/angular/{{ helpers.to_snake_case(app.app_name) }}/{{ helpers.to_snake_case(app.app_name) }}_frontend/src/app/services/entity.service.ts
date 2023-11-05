@@ -14,7 +14,7 @@ interface I{{ model.name }}ListWrapper {
 })
 export class {{ model.name }}Service {
 
-  private readonly RESOURCE_PATH = '/api/{{ helpers.to_snake_case(model.name) }}'
+  private readonly RESOURCE_PATH = '/api/{{ helpers.to_kebab_case(model.name) }}'
 
   constructor(private http: HttpClient) { }
 
@@ -24,7 +24,7 @@ export class {{ model.name }}Service {
     } else {
         search = '';
     }
-    return this.http.get<I{{ model.name }}ListWrapper>(`${this.RESOURCE_PATH}?$offset=${page - 1}&limit=${size}{search}`, {observe: 'response'});
+    return this.http.get<I{{ model.name }}ListWrapper>(`${this.RESOURCE_PATH}?offset=${page - 1}&limit=${size}${search}`, {observe: 'response'});
   }
 
   findOne(id: number): Observable<HttpResponse<{{ model.name }}>> {

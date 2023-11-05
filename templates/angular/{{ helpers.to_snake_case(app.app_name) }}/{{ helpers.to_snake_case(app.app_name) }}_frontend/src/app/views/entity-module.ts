@@ -9,6 +9,7 @@ import { AuthenticatedGuard } from 'src/app/shared/authenticated.guard';
 import { {{ model.name }}Resolver } from './{{ helpers.to_kebab_case(model.name) }}.resolver';
 import { RouterModule, Routes } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
+import { SharedModule } from 'src/app/shared/shared.module';
 
 const routes: Routes = [
   { path: 'new', component: {{model.name}}UpdateComponent, canActivate: [AuthenticatedGuard] },
@@ -29,6 +30,7 @@ const routes: Routes = [
     CommonModule,
     ReactiveFormsModule,
     RouterModule.forChild(routes),
+    SharedModule
   ]
 })
 export class {{model.name}}Module { }

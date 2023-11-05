@@ -5,7 +5,6 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { {{ model.name }}, {{ model.name }}Payload } from 'src/app/models/{{ helpers.to_kebab_case(model.name) }}';
 import { {{ model.name }}Service } from 'src/app/services/{{ helpers.to_kebab_case(model.name) }}.service';
-import { map } from 'rxjs';
 // {enum_imports}
 // {auto_complete_services_import}
 
@@ -43,17 +42,15 @@ export class {{ model.name }}UpdateComponent implements OnInit {
   }
 
   createFormGroup(record?: {{ model.name }}): FormGroup {
-    return new FormGroup({ /*{create_form_group}*/    })
-  }
-
-  fromFormGroup(): {{ model.name }}Payload {
-    const payload = {} as {{ model.name }}Payload;
-    // {from_form_group}
-    return payload;
+    return new FormGroup({
+    {% for field in model.fields %}
+    {{ field.name }}: new FormControl(record.{{ field.name }} ?? undefined {% if field.required %},[Validators.required]{% endif %})
+    {% endfor %}
+    })
   }
 
   save(): void {
-    const payload = this.fromFormGroup();
+    const payload = formGroup?.value;
     if (this.selected?.id) {
       this.service.update(this.selected.id, payload)
         .subscribe(() => this.back());
