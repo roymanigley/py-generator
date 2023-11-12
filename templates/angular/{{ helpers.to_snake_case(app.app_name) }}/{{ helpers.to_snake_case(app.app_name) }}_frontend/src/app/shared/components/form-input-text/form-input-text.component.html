@@ -3,8 +3,9 @@
     <input 
         *ngIf="_control" 
         class="validate"
-        name="input_{{ label }}" 
-        type="text" 
+        id="input_{{ '{{ label }}' }}"
+        name="input_{{ label }}"
+        type="text"
         [formControl]="_control" 
         [required]="required">
 </div>

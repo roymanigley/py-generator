@@ -1,0 +1,11 @@
+<div>
+    <label for="input_{{ label }}">
+        <input
+            *ngIf="_control"
+            id="input_{{ label }}"
+            name="input_{{ label }}"
+            type="checkbox"
+            [formControl]="_control">
+        <span>{{ label }}</span>
+    </label>
+</div>

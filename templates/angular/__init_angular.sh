@@ -17,10 +17,12 @@ ng g service services/account
 ng g service services/CustomHttpInjector
 ng g component views/NotFound
 ng g guard shared/Authenticated --implements=CanActivate
+ng g component shared/components/form-input-boolean --module shared
 ng g component shared/components/form-input-text --module shared
 ng g component shared/components/form-input-textarea --module shared
 ng g component shared/components/form-input-number --module shared
 ng g component shared/components/form-input-date --module shared
+ng g component shared/components/form-input-date-time --module shared
 ng g component shared/components/form-input-dropdown --module shared
 ng g component shared/components/form-input-autocomplete --module shared
 {% for model in domain_models %}

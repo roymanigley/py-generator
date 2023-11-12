@@ -153,6 +153,7 @@ class {{ model.name }}RestTest(TestCase):
             {% elif field.data_type.value == 'str' %}'{{translation_string}}',
             {% elif field.data_type.value == 'int' %}{{79}},
             {% elif field.data_type.value == 'float' %}{{79.312}},
+            {% elif field.data_type.value == 'bool' %}False,
             {% elif field.data_type.value == 'date' %}datetime.datetime.now(tz=timezone.utc).isoformat()[:10],
             {% elif field.data_type.value == 'datetime' %}datetime.datetime.now(tz=timezone.utc).isoformat()[:23] + 'Z',
             {% endif %}{% endfor %}{% for relation in model.relations %}'{{ relation.name }}_id': {{relation.data_type}}RestTest.create_persisted().id, {% endfor %}}
@@ -164,6 +165,7 @@ class {{ model.name }}RestTest(TestCase):
             {% elif field.data_type.value == 'str'%}'{{translation_string | reverse}}',
             {% elif field.data_type.value == 'int'%}{{789}},
             {% elif field.data_type.value == 'float'%}{{423.33}},
+            {% elif field.data_type.value == 'bool'%}True,
             {% elif field.data_type.value == 'date'%}'2023-05-04',
             {% elif field.data_type.value == 'datetime'%}'2023-05-04T23:33:24.691Z',
             {% endif %}{% endfor %}{% for relation in model.relations %}'{{ relation.name }}_id': {{ relation.data_type }}RestTest.create_persisted().id,{% endfor %}}

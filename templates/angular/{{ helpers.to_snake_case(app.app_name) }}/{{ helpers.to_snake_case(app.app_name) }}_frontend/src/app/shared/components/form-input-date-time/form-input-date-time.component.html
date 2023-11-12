@@ -1,11 +1,21 @@
 <div class="row">
     <div class="col s5 input-field">
-        <label for="input_a">{{ label }}</label>
-        <input id="input_a" type="text" class="datepicker">
+        <label for="input_{{ '{{ label }}' }}_date">{{ label }}</label>
+        <input
+                *ngIf="controlDate"
+                id="input_{{ '{{ label }}' }}_date"
+                name="input_{{ '{{ label }}' }}_date"
+                type="date"
+                [formControl]="controlDate">
     </div>
     <div class="col s1" style="text-align: center;"><br>:</div>
     <div class="col s5  input-field">
-        <label for="input_">{{ label }}</label>
-        <input id="input_" type="text" class="timepicker">
+        <label for="input_{{ '{{ label }}' }}_time">{{ label }}</label>
+        <input
+                *ngIf="controlTime"
+                id="input_{{ '{{ label }}' }}_time"
+                name="input_{{ '{{ label }}' }}_time"
+                type="time"
+                [formControl]="controlTime">
     </div>
 </div>

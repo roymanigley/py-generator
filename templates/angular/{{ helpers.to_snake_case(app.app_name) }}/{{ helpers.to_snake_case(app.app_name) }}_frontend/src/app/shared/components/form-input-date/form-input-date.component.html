@@ -2,10 +2,10 @@
     <label for="input_{{ '{{ label }}' }}">{{ '{{ label }}' }}</label>
     <input
         *ngIf="_control"
-        class="validate datepicker"
+        class="validate"
+        id="input_{{ '{{ label }}' }}"
         name="input_{{ label }}"
-        type="text"
-        [step]="step"
+        type="date"
         [formControl]="_control"
         [required]="required">
 </div>

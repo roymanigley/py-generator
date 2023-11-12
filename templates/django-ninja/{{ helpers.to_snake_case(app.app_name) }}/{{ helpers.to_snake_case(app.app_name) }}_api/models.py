@@ -7,6 +7,7 @@ class {{ model.name }}(models.Model):
     {% elif field.data_type.value == 'str' %}{{ field.name }} = models.TextField(null={{ not field.required }}, blank=False)
     {% elif field.data_type.value == 'int' %}{{ field.name }} = models.IntegerField(null={{ not field.required }})
     {% elif field.data_type.value == 'float' %}{{ field.name }} = models.FloatField(null={{ not field.required }})
+    {% elif field.data_type.value == 'bool' %}{{ field.name }} = models.BooleanField(null={{ not field.required }})
     {% elif field.data_type.value == 'date' %}{{ field.name }} = models.DateField(null={{ not field.required }})
     {% elif field.data_type.value == 'datetime' %}{{ field.name }} = models.DateTimeField(null={{ not field.required }})
     {% endif %}{% endfor %}{% for relation in model.relations %}{{ relation.name }} = models.ForeignKey({{ relation.data_type }},null={{ not relation.required }}, on_delete=models.DO_NOTHING)

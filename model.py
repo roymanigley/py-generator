@@ -8,6 +8,7 @@ class DataType(enum.Enum):
     FLOAT = 'float'
     DATE = 'date'
     DATE_TIME = 'datetime'
+    BOOLEAN = 'bool'
 
 
 class Field(object):
@@ -38,6 +39,7 @@ class Relation(object):
         self.name = name
         self.data_type = entity.name
         self.required = required
+        self.display_field = entity.fields[0].name if len(entity.fields) > 0 else 'id'
 
 
 class ApplicationModel(object):

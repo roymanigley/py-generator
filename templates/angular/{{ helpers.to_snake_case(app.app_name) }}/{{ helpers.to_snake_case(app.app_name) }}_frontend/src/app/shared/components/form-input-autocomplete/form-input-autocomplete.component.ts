@@ -9,9 +9,10 @@ import { EMPTY, Observable, debounceTime, tap } from 'rxjs';
 })
 export class FormInputAutocompleteComponent implements OnInit{
 
-  results: any[] = []
+  results: any[] = [];
   autocomplete_control = new FormControl();
-  _control?: FormControl
+  _control?: FormControl;
+  required = true;
 
   @Input()
   label?: string
@@ -22,10 +23,13 @@ export class FormInputAutocompleteComponent implements OnInit{
   @Input()
   valueFn = (item: any) => item.id
   @Input()
-  set control(control: AbstractControl) {
+  set control(control: AbstractControl | null) {
     this._control = control as FormControl
     if (!!control?.hasValidator(Validators.required)) {
+      this.required = true;
       this.autocomplete_control.addValidators([Validators.required])
+    } else {
+      this.required = false;
     }
   }
 
@@ -34,15 +38,26 @@ export class FormInputAutocompleteComponent implements OnInit{
       debounceTime(500),
       tap(search => this.search(search))
     ).subscribe()
+
+    if (this._control?.value) {
+      const id = this.valueFn(this._control?.value)
+      const display = this.displayFn(this._control?.value)
+      this.autocomplete_control.setValue(display, {emitEvent: false})
+      this._control.setValue(id, {emitEvent: false})
+    }
+    this.search('');
   }
 
-  select(value: any): void {
-    const selected = this.results.find(val => this.displayFn(val) === this.control.value)
-    console.log('id:', this.valueFn(selected))
+  select(): void {
+    const selected = this.results.find(val => this.displayFn(val) === this.autocomplete_control?.value)
+    if (selected) {
+      this._control?.setValue(this.valueFn(selected));
+    } else {
+      this._control?.setValue(null);
+    }
   }
 
-  public search(search: string): void {
-    console.log('search:', search)
+  search(search: string): void {
     this.searchFunction(search).subscribe(values => {
       this.results.splice(0, this.results.length)
       values.forEach(value => this.results.push(value))

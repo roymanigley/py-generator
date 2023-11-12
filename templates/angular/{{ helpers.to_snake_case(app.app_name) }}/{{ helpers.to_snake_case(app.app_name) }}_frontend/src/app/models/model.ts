@@ -4,7 +4,7 @@
 export class {{ model.name }} {
     id?: number;
     {% for field in model.fields %}
-    {{ field.name }}?: {% if field.data_type.value == 'str' %}string{% elif field.data_type.value in ['int', 'float']%}number{% elif field.data_type.value in ['date', 'datetime'] %}Date{% endif %};
+    {{ field.name }}?: {% if field.data_type.value == 'str' %}string{% elif field.data_type.value in ['int', 'float']%}number{% elif field.data_type.value == 'bool' %}boolean{% elif field.data_type.value in ['date', 'datetime'] %}Date{% endif %};
     {% endfor %}{% for relation in model.relations %}
     {{ relation.name }}?: {{ relation.data_type }};
     {% endfor %}
@@ -12,7 +12,7 @@ export class {{ model.name }} {
 
 export class {{ model.name }}Payload {
     {% for field in model.fields %}
-    {{ field.name }}?: {% if field.data_type.value == 'str' %}string{% elif field.data_type.value in ['int', 'float']%}number{% elif field.data_type.value in ['date', 'datetime'] %}Date{% endif %};
+    {{ field.name }}?: {% if field.data_type.value == 'str' %}string{% elif field.data_type.value in ['int', 'float']%}number{% elif field.data_type.value == 'bool' %}boolean{% elif field.data_type.value in ['date', 'datetime'] %}Date{% endif %};
     {% endfor %}{% for relation in model.relations %}
     {{ relation.name }}_id?: number;
     {% endfor %}

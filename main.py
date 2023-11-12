@@ -9,8 +9,9 @@ person = Entity('ParentEntity', fields=[
     Field(**{'name': 'float_number', 'data_type': DataType.FLOAT, 'required': True}),
     Field(**{'name': 'date_field', 'data_type': DataType.DATE, 'required': True}),
     Field(**{'name': 'date_time_field', 'data_type': DataType.DATE_TIME, 'required': True}),
+    Field(**{'name': 'boolean_field', 'data_type': DataType.BOOLEAN, 'required': True}),
 ], relations=[
-    Relation(name='gender', entity=gender)
+    Relation(name='child', entity=gender)
 ])
 application = ApplicationModel(app_name='Dummy', entities=[gender, person])
 

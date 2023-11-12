@@ -1,8 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, map, tap } from 'rxjs';
-import { Buffer } from "buffer";
-import { JsonPipe } from '@angular/common';
+import { Observable, map, tap, of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -15,48 +13,21 @@ export class AccountService {
     private http: HttpClient
   ) { }
 
-  init(): void {
-    const account = localStorage.getItem('account');
-    const token = localStorage.getItem('token');
-    if (account && token) {
-      this.account = JSON.parse(account);
+  getAccount(): Observable<IAccount> {
+    if (this.account) {
+      return of(this.account);
     } else {
-      this.logout();
-    }
-  }
-
-  login(login: string, password: string): Observable<IAccount> {
-    return this.http.post<IToken>(`/api/login?username=${login}&password=${password}`, undefined)
-      .pipe(
-        map(response => this.handleTokenResponse(response.token))
+      return this.http.get<IAccount>('/api/account').pipe(
+        tap(response => this.account = response),
+        map(() => this.account!)
       )
+    }
   }
 
   logout(): void {
     this.account = undefined;
-    localStorage.removeItem('account')
-    localStorage.removeItem('token')
+    this.http.get('/admin/logout/').subscribe();
   }
-
-  private handleTokenResponse(token: string): IAccount {
-    const tokenDecoded = this.decodeB64(
-      token.replace(/\..+/g, '')
-    );
-    this.account = {
-      username: JSON.parse(tokenDecoded).username
-    } as IAccount
-    localStorage.setItem('account', JSON.stringify(this.account))
-    localStorage.setItem('token', JSON.stringify(token))
-    return this.account;
-  }
-
-  private decodeB64(str: string): string {
-    return Buffer.from(str, 'base64').toString('binary');
-  }
-}
-
-interface IToken {
-  token: string
 }
 
 interface IAccount {

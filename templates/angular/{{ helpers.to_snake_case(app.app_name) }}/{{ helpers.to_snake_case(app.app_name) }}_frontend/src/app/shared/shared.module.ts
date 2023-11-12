@@ -7,28 +7,36 @@ import { FormInputDateComponent } from './components/form-input-date/form-input-
 import { FormInputDropdownComponent } from './components/form-input-dropdown/form-input-dropdown.component';
 import { FormInputAutocompleteComponent } from './components/form-input-autocomplete/form-input-autocomplete.component';
 import { FormInputTextareaComponent } from './components/form-input-textarea/form-input-textarea.component';
+import { ReactiveFormsModule } from '@angular/forms';
+import { FormInputDateTimeComponent } from './components/form-input-date-time/form-input-date-time.component';
+import { FormInputBooleanComponent } from './components/form-input-boolean/form-input-boolean.component';
 
 @NgModule({
   declarations: [
     FormInputTextComponent,
     FormInputNumberComponent,
     FormInputDateComponent,
+    FormInputDateTimeComponent,
     FormInputDropdownComponent,
     FormInputAutocompleteComponent,
-    FormInputTextareaComponent
+    FormInputTextareaComponent,
+    FormInputBooleanComponent
   ],
   imports: [
     CommonModule,
-    LayoutModule
+    LayoutModule,
+    ReactiveFormsModule
   ],
   exports: [
     LayoutModule,
     FormInputTextComponent,
     FormInputNumberComponent,
     FormInputDateComponent,
+    FormInputDateTimeComponent,
     FormInputDropdownComponent,
     FormInputAutocompleteComponent,
-    FormInputTextareaComponent
+    FormInputTextareaComponent,
+    FormInputBooleanComponent
   ]
 })
 export class SharedModule { }

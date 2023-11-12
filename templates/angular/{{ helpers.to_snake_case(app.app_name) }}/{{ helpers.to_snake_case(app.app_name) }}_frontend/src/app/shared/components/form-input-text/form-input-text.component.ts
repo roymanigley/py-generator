@@ -9,7 +9,7 @@ import { AbstractControl, FormControl, Validators } from '@angular/forms';
 export class FormInputTextComponent {
 
   _control?: FormControl;
-  required?: boolean;
+  required = true;
 
   @Input()
   label?: string;
